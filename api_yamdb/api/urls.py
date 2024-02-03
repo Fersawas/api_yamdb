@@ -9,7 +9,7 @@ router = routers.DefaultRouter()
 router.register(r'titles', TitleViewSet)
 
 urlpatterns = [
-    path('categoties/', CategoryViewSet.as_view({
+    path('categories/', CategoryViewSet.as_view({
         'get': 'list',
         'post': 'create',
         'delete': 'destroy'

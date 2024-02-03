@@ -6,8 +6,14 @@ User = get_user_model()
 
 class IsAdminOrRead(permissions.BasePermission):
     ''' Проверка является лиюзер админом'''
+    def has_permission(self, request, view):
+        return (
+            request.method in permissions.SAFE_METHODS
+            or request.user == User.is_staff
+        )
+
     def has_object_permission(self, request):
         return (
             request.method in permissions.SAFE_METHODS
-            or request.user == User.is_staf
+            or request.user == User.is_staff
         )
