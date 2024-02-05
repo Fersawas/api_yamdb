@@ -7,14 +7,14 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         fileds = '__all__'
-        models = Category
+        model = Category
 
 
 class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = '__all__'
-        models = Genre
+        model = Genre
 
 
 class TitleSerializer(serializers.ModelSerializer):
@@ -23,4 +23,4 @@ class TitleSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = '__all__'
-        models = Title
+        model = Title

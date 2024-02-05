@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404
 from reviews.models import Review, Genre, Category, Title
 
 from .permissions import IsAdminOrRead
+from .serializers import CategorySerializer, GenreSerializer, TitleSerializer
 
 
 class ReviewViewSet(viewsets.ViewSet):
@@ -40,16 +41,19 @@ class DestroyCreateViewSet(viewsets.GenericViewSet,
 class CategoryViewSet(DestroyCreateViewSet,
                       mixins.ListModelMixin):
     queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
 
 class GenreViewSet(mixins.ListModelMixin,
                    DestroyCreateViewSet):
     queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrRead,]
     queryset = Title.objects.all()
+    serializer_class = TitleSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('category', 'genre', 'name', 'year')
     pagination_class = LimitOffsetPagination
