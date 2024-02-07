@@ -3,7 +3,8 @@ from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
 from django.contrib.auth.tokens import default_token_generator
 
-from reviews.models import Category, Genre, Title, UserMain, Review, Comment
+from reviews.models import Category, Genre, Title, Review, Comment, UserMain
+
 from django.shortcuts import get_object_or_404
 
 
@@ -138,10 +139,9 @@ class TitleSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField(read_only=True)
-    title = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
-        fields = '__all__'
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
         model = Review
 
     def validate(self, data):
@@ -151,7 +151,7 @@ class ReviewSerializer(serializers.ModelSerializer):
             author = self.context['request'].user
             if Review.objects.filter(title=title, author=author).exists():
                 raise serializers.ValidationError(
-                    'Вы уже оставляли отзыв к этому произведению')
+                    'review has been done')
         return data
 
 class ComentSerializer(serializers.ModelSerializer):

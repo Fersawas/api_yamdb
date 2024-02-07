@@ -21,7 +21,7 @@ from django.db.models import Avg
 
 
 
-from reviews.models import Review, Genre, Category, Title, UserMain, Comment
+from reviews.models import Review, Genre, Category, Title, Comment, UserMain
 
 from .filters import TitleFilter
 from .permissions import (

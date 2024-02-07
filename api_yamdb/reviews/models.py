@@ -1,3 +1,4 @@
+from collections.abc import Collection
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
@@ -30,12 +31,12 @@ class UserMain(AbstractUser):
     )
 
     username = models.CharField(
-        verbose_name='user name',
+        verbose_name='username',
         max_length=150,
         validators=(
             RegexValidator(r'[\w.@+-]+'),
-        ),
-        unique=True,
+            ),
+        unique=True
     )
     email = models.EmailField(max_length=254,
                               unique=True)
@@ -44,7 +45,8 @@ class UserMain(AbstractUser):
     bio = models.TextField(blank=True)
     role = models.CharField(choices=ROLES, default='user', max_length=150)
 
-    REQUIRED_FIELDS = ['email', ]
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username',]
     
     @property
     def is_user(self):
@@ -55,6 +57,7 @@ class UserMain(AbstractUser):
     @property
     def is_moderator(self):
         return self.role == self.MODERATOR
+
 
 User = get_user_model()
 
@@ -129,6 +132,7 @@ class Review(models.Model):
                 name='unique'
             )
         ]
+        #unique_together = ('author', 'title')
 
 
 class Comment(models.Model):
