@@ -93,7 +93,6 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ('name', 'slug')
 
-
 class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -162,3 +161,4 @@ class ComentSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Comment
+

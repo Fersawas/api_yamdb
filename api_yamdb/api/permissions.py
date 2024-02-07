@@ -71,11 +71,6 @@ class IsAuthOrAdminOrModerOrRead(permissions.BasePermission):
 
 class IsAdminNoRead(permissions.BasePermission):
     ''' Проверка является лиюзер админом'''
-    #def has_object_permission(self, request, **kwargs):
-    #    return (
-    #        request.method in permissions.SAFE_METHODS
-    #        or request.user == User.is_staf
-    #    )
     def has_permission(self, request, view):
         return request.user.is_authenticated and (
             request.user.is_admin

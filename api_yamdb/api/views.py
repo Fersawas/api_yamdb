@@ -6,6 +6,7 @@ from rest_framework.permissions import (
     AllowAny, 
 )
 
+
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
@@ -162,7 +163,6 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields=['username', ]
     http_method_names = ['patch', 'get', 'head', 'post', 'delete']
     
-
     @action(url_path='me', methods=['patch', 'get'],
             detail=False, permission_classes=[IsAuthenticated,])
     def get_info(self, request, *args, **kwargs):
