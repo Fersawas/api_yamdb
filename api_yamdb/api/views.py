@@ -47,7 +47,7 @@ def send_confcode_to_user(request):
         confirmation_code = default_token_generator.make_token(user)
         send_mail('Confirm code',
                   f'your confirmation code {confirmation_code}',
-                  'yamdb@yamd.ru', [email,])
+                  'yamdb@yamd.ru', [email, ])
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -117,7 +117,7 @@ class DestroyCreateViewSet(viewsets.GenericViewSet,
                            mixins.ListModelMixin):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', )
-    permission_classes = [IsAdmin,]
+    permission_classes = [IsAdmin, ]
     lookup_field = 'slug'
 
 
@@ -132,7 +132,7 @@ class GenreViewSet(DestroyCreateViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAdminOrRead,]
+    permission_classes = [IsAdminOrRead, ]
     filterset_class = TitleFilter
 
     pagination_class = LimitOffsetPagination
@@ -153,13 +153,13 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = UserMain.objects.all()
     lookup_field = 'username'
-    permission_classes = [IsAdminNoRead,]
+    permission_classes = [IsAdminNoRead, ]
     filter_backends = [filters.SearchFilter]
     search_fields = ['username', ]
     http_method_names = ['patch', 'get', 'head', 'post', 'delete']
 
     @action(url_path='me', methods=['patch', 'get'],
-            detail=False, permission_classes=[IsAuthenticated,])
+            detail=False, permission_classes=[IsAuthenticated, ])
     def get_info(self, request, *args, **kwargs):
         serializer = self.get_serializer(request.user)
         if request.method == 'PATCH':

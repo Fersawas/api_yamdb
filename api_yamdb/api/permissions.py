@@ -52,25 +52,6 @@ class IsAdminOrUserOrRead(permissions.BasePermission):
             or request.user.is_user))
 
 
-#class IsAuthOrAdminOrModerOrRead(permissions.BasePermission):
-#    ''' Проверка зарегестрирован ли пользователь и
-#     не является ли админом '''
-#
-#    def has_permission(self, request, view):
-#        if request.method in permissions.SAFE_METHODS:
-#            return True
-#        return request.user.is_authenticated
-#
-#    def has_object_permission(self, request, view, obj):
-#        if request.method in permissions.SAFE_METHODS:
-#            return True
-#        if request.user == obj.author:
-#            return True
-#        return request.user.is_authenticated and (
-#            request.user.is_admin
-#            or request.user.is_moderator)
-
-
 class IsAdminNoRead(permissions.BasePermission):
     ''' Проверка является лиюзер админом без доступа к просмотру'''
 
