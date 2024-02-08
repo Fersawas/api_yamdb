@@ -1,7 +1,6 @@
-from collections.abc import Collection
 from django.db import models
+
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.base_user import BaseUserManager
 from django.core.validators import (
     MinValueValidator,
     MaxValueValidator
@@ -35,11 +34,10 @@ class UserMain(AbstractUser):
         max_length=150,
         validators=(
             RegexValidator(r'[\w.@+-]+'),
-            ),
+        ),
         unique=True
     )
-    email = models.EmailField(max_length=254,
-                              unique=True)
+    email = models.EmailField(max_length=254, unique=True)
     first_name = models.CharField(max_length=150, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
     bio = models.TextField(blank=True)
@@ -48,12 +46,17 @@ class UserMain(AbstractUser):
     @property
     def is_user(self):
         return self.role == self.USER
+
     @property
     def is_admin(self):
         return self.role == self.ADMIN
+
     @property
     def is_moderator(self):
         return self.role == self.MODERATOR
+
+    def __str__(self):
+        return self.username
 
 
 User = get_user_model()
@@ -122,15 +125,16 @@ class Review(models.Model):
         on_delete=models.CASCADE,
     )
     pub_date = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
+        unique_together = ('title', 'author')
         constraints = [
             models.UniqueConstraint(
                 fields=['title', 'author'],
                 name='unique'
             )
         ]
-        #unique_together = ('author', 'title')
+        # unique_together = ('author', 'title')
 
 
 class Comment(models.Model):
@@ -145,4 +149,7 @@ class Comment(models.Model):
         Review,
         related_name='comment',
         on_delete=models.CASCADE
-        )
+    )
+
+    def __str__(self):
+        return self.text

@@ -2,11 +2,11 @@ from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
 from django.contrib.auth.tokens import default_token_generator
+from reviews.models import Comment, Review
 
 from reviews.models import Category, Genre, Title, Review, Comment, UserMain
 
 from django.shortcuts import get_object_or_404
-
 
 
 class TokenSerializer(serializers.Serializer):
@@ -25,15 +25,14 @@ class AuthSerializer(serializers.ModelSerializer):
         max_length=150,
         required=True
     )
-    
+
     class Meta:
         model = UserMain
         fields = ['email', 'username', ]
-    
+
     def create(self, validated_data):
         return UserMain.objects.create(**validated_data)
 
-    
     def validate_username(self, value):
         if value.lower() == 'me':
             raise serializers.ValidationError(
@@ -42,12 +41,11 @@ class AuthSerializer(serializers.ModelSerializer):
         elif UserMain.objects.filter(username=value).exists():
             raise serializers.ValidationError('exists')
         return value
-    
+
     def validate_email(self, value):
         if UserMain.objects.filter(email=value).exists():
             raise serializers.ValidationError('exists')
         return value
-
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -58,6 +56,7 @@ class UserSerializer(serializers.ModelSerializer):
         required=True
     )
     role = serializers.CharField(required=False)
+
     def validate_role(self, value):
         if value not in ['user', 'admin', 'moderator'] and not None:
             raise serializers.ValidationError('huita')
@@ -83,7 +82,7 @@ class UserSerializer(serializers.ModelSerializer):
                   'email',
                   'first_name',
                   'last_name',
-                  'bio', 
+                  'bio',
                   'role')
 
 
@@ -101,7 +100,7 @@ class GenreSerializer(serializers.ModelSerializer):
         model = Genre
 
 
-#class TitleSerializerGet(serializers.Serializer):
+# class TitleSerializerGet(serializers.Serializer):
 #    genre = serializers.SlugRelatedField(queryset=Genre.objects.all(),
 #                                         many=True,
 #                                         slug_field='slug')
@@ -118,7 +117,7 @@ class TitleSerializerGet(serializers.ModelSerializer):
     genre = GenreSerializer(many=True, read_only=True)
     category = CategorySerializer(read_only=True)
     rating = serializers.IntegerField(read_only=True)
-    
+
     class Meta:
         fields = '__all__'
         model = Title
@@ -154,11 +153,13 @@ class ReviewSerializer(serializers.ModelSerializer):
                     'review has been done')
         return data
 
+
 class ComentSerializer(serializers.ModelSerializer):
     review = serializers.SlugRelatedField(read_only=True,
                                           slug_field='text')
     author = serializers.SlugRelatedField(read_only=True,
                                           slug_field='username')
+
     class Meta:
         fields = '__all__'
         model = Comment
