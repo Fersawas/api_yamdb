@@ -1,13 +1,12 @@
 from rest_framework import viewsets, filters, mixins
 from rest_framework.permissions import (
-    IsAuthenticatedOrReadOnly,
     IsAuthenticated,
-    IsAdminUser,
     AllowAny,
 )
 
 
-from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
+from rest_framework.pagination import (PageNumberPagination,
+                                       LimitOffsetPagination)
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 from rest_framework import status, filters
@@ -16,7 +15,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
-from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Avg
 
@@ -25,11 +23,12 @@ from reviews.models import Review, Genre, Category, Title, Comment, UserMain
 
 from .filters import TitleFilter
 from .permissions import (
-    IsAdminOrUserOrRead, IsAdmin, IsAdminOrRead, IsAuthOrAdminOrModerOrRead,
+    IsAdmin, IsAdminOrRead,
     IsAdminNoRead, IsStaffOrAuthorOrReadOnly)
 from .serializers import (
-    CategorySerializer, GenreSerializer, TitleSerializer, AuthSerializer, TokenSerializer,
-    UserSerializer, ReviewSerializer, ComentSerializer, TitleSerializerGet
+    CategorySerializer, GenreSerializer, TitleSerializer,
+    AuthSerializer, TokenSerializer, UserSerializer,
+    ReviewSerializer, ComentSerializer, TitleSerializerGet
 )
 
 
@@ -46,7 +45,8 @@ def send_confcode_to_user(request):
         email = serializer.validated_data['email']
         user = get_object_or_404(UserMain, email=email)
         confirmation_code = default_token_generator.make_token(user)
-        send_mail('Confirm code', f'your confirmation code {confirmation_code}',
+        send_mail('Confirm code',
+                  f'your confirmation code {confirmation_code}',
                   'yamdb@yamd.ru', [email,])
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -60,7 +60,8 @@ def send_token_to_user(request):
     serializer.is_valid(raise_exception=True)
     user = get_object_or_404(
         UserMain, username=serializer.validated_data['username'])
-    if default_token_generator.check_token(user, serializer.validated_data['confirmation_code']):
+    if default_token_generator.check_token(
+            user, serializer.validated_data['confirmation_code']):
         refresh = RefreshToken.for_user(user)
         return Response({
             'token': str(refresh.access_token)
@@ -85,7 +86,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         title = get_object_or_404(
             Title.objects.filter(id=self.kwargs['title_pk'])
-        )    
+        )
         serializer.save(
             author=self.request.user, title=title
         )

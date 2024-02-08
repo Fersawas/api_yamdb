@@ -42,7 +42,7 @@ class UserMain(AbstractUser):
     last_name = models.CharField(max_length=150, blank=True)
     bio = models.TextField(blank=True)
     role = models.CharField(choices=ROLES, default='user', max_length=150)
-    
+
     @property
     def is_user(self):
         return self.role == self.USER
@@ -95,7 +95,7 @@ class Title(models.Model):
     genre = models.ManyToManyField(
         Genre
     )
-    
+
     def __str__(self) -> str:
         return self.name
 

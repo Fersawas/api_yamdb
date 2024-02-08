@@ -1,7 +1,4 @@
 from rest_framework import serializers
-from rest_framework.relations import SlugRelatedField
-from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
-from django.contrib.auth.tokens import default_token_generator
 from reviews.models import Comment, Review
 
 from reviews.models import Category, Genre, Title, Review, Comment, UserMain
@@ -98,19 +95,6 @@ class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('name', 'slug')
         model = Genre
-
-
-# class TitleSerializerGet(serializers.Serializer):
-#    genre = serializers.SlugRelatedField(queryset=Genre.objects.all(),
-#                                         many=True,
-#                                         slug_field='slug')
-#    category = serializers.SlugRelatedField(queryset=Category.objects.all(),
-#                                            slug_field='slug')
-#    raiting = serializers.IntegerField()
-#    description = serializers.CharField()
-#    name = serializers.CharField()
-#    class Meta:
-#        fields = '__all__'
 
 
 class TitleSerializerGet(serializers.ModelSerializer):

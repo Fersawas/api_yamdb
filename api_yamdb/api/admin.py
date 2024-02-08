@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 # Register your models here.
 User = get_user_model()
 
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -19,5 +20,6 @@ class UserAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        ('Extra Fields', {'fields': ('bio', 'role',)}),
+        ('Extra Fields', {'fields': ('bio',
+                                     'role',)}),
     )
