@@ -44,9 +44,6 @@ class UserMain(AbstractUser):
     last_name = models.CharField(max_length=150, blank=True)
     bio = models.TextField(blank=True)
     role = models.CharField(choices=ROLES, default='user', max_length=150)
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username',]
     
     @property
     def is_user(self):
@@ -84,10 +81,6 @@ class Title(models.Model):
     ''' Произведения хранят в себе Жанры и Категории'''
     name = models.CharField(max_length=255)
     year = models.IntegerField()
-    description = models.TextField(blank=True)
-    genre = models.ManyToManyField(
-        Genre
-    )
     category = models.ForeignKey(
         Category,
         on_delete=models.PROTECT,
@@ -95,6 +88,11 @@ class Title(models.Model):
         related_name='title'
     )
 
+    description = models.TextField(blank=True)
+    genre = models.ManyToManyField(
+        Genre
+    )
+    
     def __str__(self) -> str:
         return self.name
 

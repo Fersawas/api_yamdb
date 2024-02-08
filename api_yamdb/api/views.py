@@ -81,14 +81,11 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return Review.objects.filter(title=title)
 
     def perform_create(self, serializer):
-
+        title = get_object_or_404(
+            Title.objects.filter(id=self.kwargs['title_pk'])
+        )    
         serializer.save(
-            author=self.request.user, title_id=self.kwargs['title_pk']
-        )
-
-    def perform_update(self, serializer):
-        serializer.save(
-            author=self.request.user, title_id=self.kwargs['title_pk']
+            author=self.request.user, title=title
         )
 
 
@@ -105,14 +102,10 @@ class CommentViewSet(viewsets.ModelViewSet):
         return Comment.objects.filter(review=review)
     
     def perform_create(self, serializer):
+        review = get_object_or_404(
+            Review.objects.filter(id=self.kwargs['review_pk']))
         serializer.save(
-            author=self.request.user, review_id=self.kwargs['review_pk']
-        )
-    
-    def perform_update(self, serializer):
-        serializer.save(
-            author=self.request.user, review_id=self.kwargs['review_pk']
-        )
+            author=self.request.user, review=review)
 
 
 class DestroyCreateViewSet(viewsets.GenericViewSet,
