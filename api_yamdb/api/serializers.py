@@ -93,6 +93,7 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ('name', 'slug')
 
+
 class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -118,7 +119,6 @@ class TitleSerializerGet(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     rating = serializers.IntegerField(read_only=True)
     
-    
     class Meta:
         fields = '__all__'
         model = Title
@@ -137,14 +137,15 @@ class TitleSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField(read_only=True)
+    author = serializers.SlugRelatedField(read_only=True,
+                                          slug_field='username')
 
     class Meta:
         fields = ('id', 'text', 'author', 'score', 'pub_date')
         model = Review
 
     def validate(self, data):
-        if self.context['request'].method == 'POST':
+        if self.context['request'].method != 'PATCH':
             title_id = self.context['view'].kwargs['title_pk']
             title = get_object_or_404(Title, id=title_id)
             author = self.context['request'].user
@@ -161,4 +162,3 @@ class ComentSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Comment
-
