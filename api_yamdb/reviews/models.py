@@ -8,15 +8,7 @@ from django.core.validators import (
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 
-
-# Create your models here.
-USER = 'user'
-ADMIN = 'admin'
-MODERATOR = 'moderator'
-
-CHOICES = ((USER, 'user'),
-           (MODERATOR, 'moderator'),
-           (ADMIN, 'admin'))
+from .constants import MAX_LENGTH, SLUG_LENGTH, NAME_LENGTH
 
 
 class UserMain(AbstractUser):
@@ -31,17 +23,18 @@ class UserMain(AbstractUser):
 
     username = models.CharField(
         verbose_name='username',
-        max_length=150,
+        max_length=NAME_LENGTH,
         validators=(
             RegexValidator(r'[\w.@+-]+'),
         ),
         unique=True
     )
-    email = models.EmailField(max_length=254, unique=True)
-    first_name = models.CharField(max_length=150, blank=True)
-    last_name = models.CharField(max_length=150, blank=True)
+    email = models.EmailField(max_length=MAX_LENGTH, unique=True)
+    first_name = models.CharField(max_length=NAME_LENGTH, blank=True)
+    last_name = models.CharField(max_length=NAME_LENGTH, blank=True)
     bio = models.TextField(blank=True)
-    role = models.CharField(choices=ROLES, default='user', max_length=150)
+    role = models.CharField(choices=ROLES, default='user',
+                            max_length=NAME_LENGTH)
 
     @property
     def is_user(self):
@@ -60,12 +53,15 @@ class UserMain(AbstractUser):
 
 
 User = get_user_model()
+''' Использую тут, потому что, если ставить до объявления
+    модели пользователя выдает ошибку ImproperlyConfigured
+    AUTH_USER_MODEL refers to model 'reviews.UserMain '''
 
 
 class Category(models.Model):
     ''' Категории произведений '''
-    name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True, max_length=50)
+    name = models.CharField(max_length=MAX_LENGTH)
+    slug = models.SlugField(unique=True, max_length=SLUG_LENGTH)
 
     def __str__(self) -> str:
         return self.name
@@ -73,8 +69,8 @@ class Category(models.Model):
 
 class Genre(models.Model):
     ''' Жанры произведений '''
-    name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True, max_length=50)
+    name = models.CharField(max_length=MAX_LENGTH)
+    slug = models.SlugField(unique=True, max_length=SLUG_LENGTH)
 
     def __str__(self) -> str:
         return self.name
@@ -82,7 +78,7 @@ class Genre(models.Model):
 
 class Title(models.Model):
     ''' Произведения хранят в себе Жанры и Категории'''
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=MAX_LENGTH)
     year = models.IntegerField()
     category = models.ForeignKey(
         Category,
@@ -134,7 +130,6 @@ class Review(models.Model):
                 name='unique'
             )
         ]
-        # unique_together = ('author', 'title')
 
 
 class Comment(models.Model):

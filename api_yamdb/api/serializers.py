@@ -2,6 +2,7 @@ from rest_framework import serializers
 from reviews.models import Comment, Review
 
 from reviews.models import Category, Genre, Title, Review, Comment, UserMain
+from reviews.constants import MAX_LENGTH, NAME_LENGTH
 
 from django.shortcuts import get_object_or_404
 
@@ -9,17 +10,17 @@ from django.shortcuts import get_object_or_404
 class TokenSerializer(serializers.Serializer):
     username = serializers.RegexField(
         regex=r'^[\w.@+-]+$',
-        max_length=150,
+        max_length=NAME_LENGTH,
         required=True
     )
     confirmation_code = serializers.CharField(required=True)
 
 
 class AuthSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(max_length=254)
+    email = serializers.EmailField(max_length=MAX_LENGTH)
     username = serializers.RegexField(
         regex=r'^[\w.@+-]+$',
-        max_length=150,
+        max_length=NAME_LENGTH,
         required=True
     )
 
@@ -46,17 +47,17 @@ class AuthSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(max_length=254, required=True)
+    email = serializers.EmailField(max_length=MAX_LENGTH, required=True)
     username = serializers.RegexField(
         regex=r'^[\w.@+-]+$',
-        max_length=150,
+        max_length=NAME_LENGTH,
         required=True
     )
     role = serializers.CharField(required=False)
 
     def validate_role(self, value):
         if value not in ['user', 'admin', 'moderator'] and not None:
-            raise serializers.ValidationError('huita')
+            raise serializers.ValidationError('Role mistake')
         return value
 
     def validate_username(self, value):

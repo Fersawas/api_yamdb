@@ -17,6 +17,7 @@ from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Avg
+from django.conf import settings
 
 
 from reviews.models import Review, Genre, Category, Title, Comment, UserMain
@@ -47,7 +48,7 @@ def send_confcode_to_user(request):
         confirmation_code = default_token_generator.make_token(user)
         send_mail('Confirm code',
                   f'your confirmation code {confirmation_code}',
-                  'yamdb@yamd.ru', [email, ])
+                  settings.EMAIL_HOST_USER, [email, ])
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -70,7 +71,7 @@ def send_token_to_user(request):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-
+    ''' Представление отзыва '''
     serializer_class = ReviewSerializer
     pagination_class = PageNumberPagination
     permission_classes = (IsStaffOrAuthorOrReadOnly,)
@@ -93,6 +94,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
+    ''' Представление комментария '''
     queryset = Comment.objects.all()
     serializer_class = ComentSerializer
     pagination_class = LimitOffsetPagination
@@ -115,6 +117,7 @@ class DestroyCreateViewSet(viewsets.GenericViewSet,
                            mixins.CreateModelMixin,
                            mixins.DestroyModelMixin,
                            mixins.ListModelMixin):
+    ''' Базовый класс для Category и Genre '''
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', )
     permission_classes = [IsAdmin, ]
@@ -122,16 +125,19 @@ class DestroyCreateViewSet(viewsets.GenericViewSet,
 
 
 class CategoryViewSet(DestroyCreateViewSet):
+    ''' Представление категорий '''
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
 
 class GenreViewSet(DestroyCreateViewSet):
+    ''' Представление произведений '''
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
 
 
 class TitleViewSet(viewsets.ModelViewSet):
+    ''' Преставление произведений '''
     permission_classes = [IsAdminOrRead, ]
     filterset_class = TitleFilter
 
@@ -150,6 +156,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    ''' Представлние пользователя '''
     serializer_class = UserSerializer
     queryset = UserMain.objects.all()
     lookup_field = 'username'

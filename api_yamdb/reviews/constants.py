@@ -1,0 +1,3 @@
+NAME_LENGTH: int = 150
+MAX_LENGTH: int = 254
+SLUG_LENGTH: int = 50
