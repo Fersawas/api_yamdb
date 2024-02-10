@@ -53,9 +53,6 @@ class UserMain(AbstractUser):
 
 
 User = get_user_model()
-''' Использую тут, потому что, если ставить до объявления
-    модели пользователя выдает ошибку ImproperlyConfigured
-    AUTH_USER_MODEL refers to model 'reviews.UserMain '''
 
 
 class Category(models.Model):
@@ -89,11 +86,23 @@ class Title(models.Model):
 
     description = models.TextField(blank=True)
     genre = models.ManyToManyField(
-        Genre
+        Genre,
+        through='Genre_Title'
     )
 
     def __str__(self) -> str:
         return self.name
+
+
+class Genre_Title(models.Model):
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE
+    )
+    genre = models.ForeignKey(
+        Genre,
+        on_delete=models.CASCADE
+    )
 
 
 class Review(models.Model):
